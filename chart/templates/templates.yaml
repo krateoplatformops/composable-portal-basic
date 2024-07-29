@@ -1,0 +1,156 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: demo-system
+---
+apiVersion: templates.krateo.io/v1alpha1
+kind: Collection
+metadata:
+  name: templates-row
+  namespace: demo-system
+spec:
+  type: row
+  widgetsRefs:
+  - apiVersion: templates.krateo.io/v1alpha1
+    resource: collections
+    name: templates-row-column-1
+    namespace: demo-system
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: templates-row-column-1
+  namespace: demo-system
+data:
+  width: "24"
+---
+apiVersion: templates.krateo.io/v1alpha1
+kind: Collection
+metadata:
+  name: templates-row-column-1
+  namespace: demo-system
+spec:
+  type: column
+  propsRef:
+    name: templates-row-column-1
+    namespace: demo-system
+  widgetsRefs:
+  - apiVersion: templates.krateo.io/v1alpha1
+    resource: widgets
+    name: list-compositiondefinitions
+    namespace: demo-system
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: list-compositiondefinitions
+  namespace: demo-system
+data:
+  panel: "true"
+---
+apiVersion: templates.krateo.io/v1alpha1
+kind: Widget
+metadata:
+  annotations:
+    "krateo.io/verbose-api": "true"
+  name: list-compositiondefinitions
+  namespace: demo-system
+spec:
+  type: card
+  propsRef:
+    name: list-compositiondefinitions
+    namespace: demo-system
+  actions:
+  - iterator: .allCompositionDefinitions.items
+    template:
+      apiVersion: templates.krateo.io/v1alpha1
+      resource: form
+      name: ${ "template-" + .metadata.name + "-form" }
+      namespace: ${ .metadata.namespace }
+  app:
+    iterator: .allCompositionDefinitions.items
+    template:
+      title: ${ .metadata.name }
+      content: ${ .status.apiVersion }
+  api:
+  - name: allCompositionDefinitions
+    path: "/apis/core.krateo.io/v1alpha1/namespaces/demo-system/compositiondefinitions"
+    verb: GET
+    headers:
+    - 'Accept: application/json'
+---
+apiVersion: templates.krateo.io/v1alpha1
+kind: Collection
+metadata:
+  name: deployments-row
+  namespace: demo-system
+spec:
+  type: row
+  widgetsRefs:
+  - apiVersion: templates.krateo.io/v1alpha1
+    resource: collections
+    name: deployments-column
+    namespace: demo-system
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: deployments-column
+  namespace: demo-system
+data:
+  width: "24"
+---
+apiVersion: templates.krateo.io/v1alpha1
+kind: Collection
+metadata:
+  name: deployments-column
+  namespace: demo-system
+spec:
+  type: column
+  propsRef:
+    name: deployments-column
+    namespace: demo-system
+  widgetsRefs:
+  - apiVersion: templates.krateo.io/v1alpha1
+    resource: widgets
+    name: list-compositions
+    namespace: demo-system
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: bff-endpoint
+  namespace: demo-system
+stringData:
+  server-url: http://bff.krateo-system.svc:8081
+  insecure: "true"
+---
+apiVersion: templates.krateo.io/v1alpha1
+kind: Widget
+metadata:
+  name: list-compositions
+  namespace: demo-system
+spec:
+  type: card
+  actions:
+  - iterator: .allCompositions.items
+    template:
+      apiVersion: templates.krateo.io/v1alpha1
+      resource: collections
+      name: ${ "composition-" + .metadata.name + "-" + .metadata.namespace + "-tablist" }
+      namespace: ${ .metadata.namespace }
+  app:
+    iterator: .allCompositions.items
+    template:
+      title: ${ .metadata.name }
+      content: ${ "kind:" + .kind + ",apiVersion:" + .apiVersion }
+  api:
+  - name: allCompositions
+    path: "/list?category=compositions"
+    verb: GET
+    endpointRef:
+      name: bff-endpoint
+      namespace: demo-system
+    headers:
+    - 'Accept: application/json'

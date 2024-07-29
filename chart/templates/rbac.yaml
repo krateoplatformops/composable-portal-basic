@@ -1,0 +1,75 @@
+# role.yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: demo-system
+  name: templates-access-role
+rules:
+- apiGroups: ["templates.krateo.io"]
+  resources: ["collections","widgets","form","forms","resourcetrees"]
+  verbs: ["get", "list", "watch"]  # Adjust the verbs as needed (e.g., "create", "update", "delete")
+---
+# rolebinding.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: templates-access-binding
+  namespace: demo-system
+subjects:
+- kind: Group
+  name: devs
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: templates-access-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# role-compositiondefinitions.yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: demo-system
+  name: compositiondefinitions-access-role
+rules:
+- apiGroups: ["core.krateo.io"]
+  resources: ["compositiondefinitions"]
+  verbs: ["get", "list", "watch"]  # Adjust the verbs as needed (e.g., "create", "update", "delete")
+---
+# rolebinding-compositiondefinitions.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: compositiondefinitions-access-binding
+  namespace: demo-system
+subjects:
+- kind: Group
+  name: devs
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: compositiondefinitions-access-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: demo-system
+  name: compositions-creator
+rules:
+- apiGroups: ["composition.krateo.io"]
+  resources: ["*"]
+  verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: compositions-creator-binding
+  namespace: demo-system
+subjects:
+- kind: Group
+  name: devs
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: compositions-creator
+  apiGroup: rbac.authorization.k8s.io
