@@ -74,8 +74,11 @@ spec:
       content: ${ .status.apiVersion }
   api:
   - name: allCompositionDefinitions
-    path: "/apis/core.krateo.io/v1alpha1/namespaces/demo-system/compositiondefinitions"
+    path: "/list?category=defs"
     verb: GET
+    endpointRef:
+      name: bff-endpoint
+      namespace: demo-system
     headers:
     - 'Accept: application/json'
 ---
