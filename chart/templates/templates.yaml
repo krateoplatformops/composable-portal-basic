@@ -31,42 +31,47 @@ spec:
     namespace: {{ .Release.Namespace }}
   widgetsRefs:
   - apiVersion: templates.krateo.io/v1alpha1
-    resource: widgets
-    name: list-compositiondefinitions
+    resource: collectioniterators
+    name: compositiondefinitions-grid
     namespace: {{ .Release.Namespace }}
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: bff-endpoint
+  namespace: {{ .Release.Namespace }}
+stringData:
+  server-url: http://bff.krateo-system.svc:8081
+  insecure: "true"
 ---
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: list-compositiondefinitions
+  name: compositiondefinitions-grid
   namespace: {{ .Release.Namespace }}
 data:
-  panel: "true"
+  width: "8"
 ---
 apiVersion: templates.krateo.io/v1alpha1
-kind: Widget
+kind: CollectionIterator
 metadata:
-  annotations:
-    "krateo.io/verbose-api": "true"
-  name: list-compositiondefinitions
+  name: compositiondefinitions-grid
   namespace: {{ .Release.Namespace }}
+  annotations:
+    "krateo.io/connector-verbose": "true"
 spec:
-  type: card
+  type: grid
   propsRef:
-    name: list-compositiondefinitions
+    name: compositiondefinitions-grid
     namespace: {{ .Release.Namespace }}
-  actions:
+  widgetsRefs:
   - iterator: .allCompositionDefinitions.items
     template:
       apiVersion: templates.krateo.io/v1alpha1
-      resource: form
-      name: ${ "template-" + .metadata.name + "-form" }
+      resource: widgets
+      name: ${ "template-" + .metadata.name + "-card" }
       namespace: ${ .metadata.namespace }
-  app:
-    iterator: .allCompositionDefinitions.items
-    template:
-      title: ${ .metadata.name }
-      content: ${ .status.apiVersion }
   api:
   - name: allCompositionDefinitions
     path: "/list?category=defs"
@@ -86,7 +91,7 @@ spec:
   type: row
   widgetsRefs:
   - apiVersion: templates.krateo.io/v1alpha1
-    resource: collections
+    resource: collectioniterators
     name: compositions-column
     namespace: {{ .Release.Namespace }}
 ---
@@ -99,50 +104,24 @@ data:
   width: "24"
 ---
 apiVersion: templates.krateo.io/v1alpha1
-kind: Collection
+kind: CollectionIterator
 metadata:
   name: compositions-column
   namespace: {{ .Release.Namespace }}
+  annotations:
+    "krateo.io/connector-verbose": "true"
 spec:
   type: column
   propsRef:
     name: compositions-column
     namespace: {{ .Release.Namespace }}
   widgetsRefs:
-  - apiVersion: templates.krateo.io/v1alpha1
-    resource: widgets
-    name: list-compositions
-    namespace: {{ .Release.Namespace }}
----
-apiVersion: v1
-kind: Secret
-type: Opaque
-metadata:
-  name: bff-endpoint
-  namespace: {{ .Release.Namespace }}
-stringData:
-  server-url: http://bff.krateo-system.svc:8081
-  insecure: "true"
----
-apiVersion: templates.krateo.io/v1alpha1
-kind: Widget
-metadata:
-  name: list-compositions
-  namespace: {{ .Release.Namespace }}
-spec:
-  type: card
-  actions:
   - iterator: .allCompositions.items
     template:
       apiVersion: templates.krateo.io/v1alpha1
-      resource: collections
-      name: ${ "composition-" + .metadata.name + "-" + .metadata.namespace + "-tablist" }
+      resource: widgets
+      name: ${ "composition-" + .metadata.name + "-card" }
       namespace: ${ .metadata.namespace }
-  app:
-    iterator: .allCompositions.items
-    template:
-      title: ${ .metadata.name }
-      content: ${ "kind:" + .kind + ",apiVersion:" + .apiVersion }
   api:
   - name: allCompositions
     path: "/list?category=compositions"
@@ -152,3 +131,4 @@ spec:
       namespace: {{ .Release.Namespace }}
     headers:
     - 'Accept: application/json'
+---
