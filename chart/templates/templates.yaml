@@ -35,16 +35,6 @@ spec:
     name: compositiondefinitions-grid
     namespace: {{ .Release.Namespace }}
 ---
-apiVersion: v1
-kind: Secret
-type: Opaque
-metadata:
-  name: bff-endpoint
-  namespace: {{ .Release.Namespace }}
-stringData:
-  server-url: http://bff.krateo-system.svc:8081
-  insecure: "true"
----
 kind: ConfigMap
 apiVersion: v1
 metadata:
