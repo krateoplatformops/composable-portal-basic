@@ -1,0 +1,20 @@
+apiVersion: templates.krateo.io/v1alpha1
+kind: Widget
+metadata:
+  name: menu-compositions
+  namespace: krateo-system
+spec:
+  actions:
+  - template:
+      apiVersion: templates.krateo.io/v1alpha1
+      name: compositions-row
+      namespace: krateo-system
+      resource: collections
+      verb: GET
+  app:
+    template:
+      icon: fa-gear
+      label: Compositions
+      menu: "true"
+      path: /compositions
+  type: route
