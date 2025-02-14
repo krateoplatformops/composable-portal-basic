@@ -1,0 +1,23 @@
+apiVersion: templates.krateo.io/v1alpha1
+kind: CollectionIterator
+metadata:
+  name: routes
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: routes
+  widgetsRefs:
+  - iterator: .allRoutes.status
+    template:
+      apiVersion: templates.krateo.io/v1alpha1
+      resource: widgets
+      name: ${ .metadata.name }
+      namespace: ${ .metadata.namespace }
+  api:
+  - name: allRoutes
+    path: "/call?apiVersion=templates.krateo.io%2Fv1&resource=restactions&name=routes&namespace={{ .Release.Namespace }}"
+    verb: GET
+    endpointRef:
+      name: snowplow-endpoint
+      namespace: {{ .Release.Namespace }}
+    headers:
+    - 'Accept: application/json'

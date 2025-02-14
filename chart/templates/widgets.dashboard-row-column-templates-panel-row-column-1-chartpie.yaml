@@ -1,0 +1,26 @@
+apiVersion: templates.krateo.io/v1alpha1
+kind: Widget
+metadata:
+  name: dashboard-row-column-templates-panel-row-column-1-chartpie
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: chartpie
+  app:
+    template:
+      title: ${ [.allCompositionDefinitions.items[] ] | length }
+      description: Templates
+      series: >
+        ${ "{ \"total\":" + (.allCompositionDefinitions.items | length | tostring) + 
+        ", \"data\": [" +
+        "{ \"color\": \"green\", \"value\":" + ([.allCompositionDefinitions.items[] | select(.status.conditions[]? | .type == "Ready" and .status == "True")] | length | tostring ) + ", \"label\": \"Ready:True\"}," +
+        "{ \"color\": \"orange\", \"value\":" + ([.allCompositionDefinitions.items[] | select(.status.conditions[]? | .type == "Ready" and .status == "False")] | length | tostring ) + ", \"label\": \"Ready:False\"}," +
+        "{ \"color\": \"gray\", \"value\":" + ((.allCompositionDefinitions.items | length) - ([.allCompositionDefinitions.items[] | select(.status.conditions[]? | .type == "Ready" and .status == "True")] | length  ) - ([.allCompositionDefinitions.items[] | select(.status.conditions[]? | .type == "Ready" and .status == "False")] | length ) | tostring ) + ", \"label\": \"Unknown\"}]}" } 
+  api:
+  - name: allCompositionDefinitions
+    path: "/list?category=defs"
+    verb: GET
+    endpointRef:
+      name: snowplow-endpoint
+      namespace: {{ .Release.Namespace }}
+    headers:
+    - 'Accept: application/json'

@@ -1,0 +1,33 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: dashboard-row-column-templates-panel-row-column-2-tabledata
+  namespace: {{ .Release.Namespace }}
+data:
+  pageSize: "10"
+  columns: "[ { \"key\": \"name\", \"title\": \"name\" },{ \"key\": \"namespace\", \"title\": \"namespace\"},{\"key\": \"status\", \"title\": \"status\"},{\"key\": \"date\", \"title\": \"date\"} ]"    
+---
+apiVersion: templates.krateo.io/v1alpha1
+kind: Widget
+metadata:
+  name: dashboard-row-column-templates-panel-row-column-2-tabledata
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: tabledata
+  propsRef:
+    name: dashboard-row-column-templates-panel-row-column-2-tabledata
+    namespace: {{ .Release.Namespace }}
+  app:
+    template:
+      data: >
+        ${ [.allCompositionDefinitions.items[] | { key: .metadata.uid, name: .metadata.name, namespace: .metadata.namespace, date: .metadata.creationTimestamp, status: ( if .status? and .status.conditions? then (.status.conditions[]? | select(.type == "Ready") | "Ready: " + .status // (.status.conditions[]? | select(.type == "Synced") | .message)) else "Status not available" end ) } ] | sort_by(.date) | reverse }
+  api:
+  - name: allCompositionDefinitions
+    path: "/list?category=defs"
+    verb: GET
+    endpointRef:
+      name: snowplow-endpoint
+      namespace: {{ .Release.Namespace }}
+    headers:
+    - 'Accept: application/json'

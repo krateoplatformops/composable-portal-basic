@@ -7,6 +7,6 @@ spec:
   type: row
   widgetsRefs:
   - apiVersion: templates.krateo.io/v1alpha1
-    resource: collectioniterators
+    resource: collections
     name: compositions-row-column
     namespace: {{ .Release.Namespace }}
