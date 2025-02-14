@@ -1,36 +1,36 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: templates-row-column
+  name: compositions-row-column-datalist
   namespace: {{ .Release.Namespace }}
 data:
-  width: "8"
+  width: "24"
+  prefix: "compositions-row-column-datalist"
+  asGrid: "false"
 ---
 apiVersion: templates.krateo.io/v1alpha1
 kind: CollectionIterator
 metadata:
-  name: templates-row-column
+  name: compositions-row-column-datalist
   namespace: {{ .Release.Namespace }}
-  annotations:
-    "krateo.io/connector-verbose": "true"
 spec:
-  type: grid
+  type: datalist
   propsRef:
-    name: templates-row-column
+    name: compositions-row-column-datalist
     namespace: {{ .Release.Namespace }}
   widgetsRefs:
-  - iterator: .allCompositionDefinitions.items
+  - iterator: .allCompositions.items
     template:
       apiVersion: templates.krateo.io/v1alpha1
       resource: widgets
-      name: ${ "template-" + .metadata.name + "-card" }
+      name: ${ "composition-" + .metadata.name + "-card" }
       namespace: ${ .metadata.namespace }
   api:
-  - name: allCompositionDefinitions
-    path: "/list?category=defs"
+  - name: allCompositions
+    path: "/list?category=compositions"
     verb: GET
     endpointRef:
-      name: bff-endpoint
+      name: snowplow-endpoint
       namespace: {{ .Release.Namespace }}
     headers:
     - 'Accept: application/json'

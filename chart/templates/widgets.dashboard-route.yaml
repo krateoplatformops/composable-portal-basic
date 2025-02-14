@@ -1,22 +1,21 @@
 apiVersion: templates.krateo.io/v1alpha1
 kind: Widget
 metadata:
-  name: compositions-route
+  name: dashboard-route
   namespace: {{ .Release.Namespace }}
 spec:
   actions:
   - template:
       apiVersion: templates.krateo.io/v1alpha1
-      name: compositions-row
+      name: dashboard-row
       namespace: {{ .Release.Namespace }}
       resource: collections
       verb: GET
   app:
     template:
-      icon: fa-shapes
-      label: Compositions
+      icon: fa-chart-line
+      label: Dashboard
       menu: "true"
-      path: /compositions
-      default: "true"
-      order: "3"
+      path: /dashboard
+      order: "1"
   type: route

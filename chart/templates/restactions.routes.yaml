@@ -1,0 +1,17 @@
+apiVersion: templates.krateo.io/v1
+kind: RESTAction
+metadata:
+  name: routes
+  namespace: {{ .Release.Namespace }}
+spec:
+  api:
+  - name: namespaces
+    path: "/api/v1/namespaces"
+    filter: "[.items[] | .metadata.name]"
+  - name: routes
+    dependsOn: 
+      name: namespaces
+      iterator: .[]
+    path: ${ "/apis/templates.krateo.io/v1alpha1/namespaces/" + (.) + "/widgets" }
+    filter: "[.items[] | select(.spec.type == \"route\" ) ]"
+  filter: ".routes | sort_by(.spec.app.template.order)"
