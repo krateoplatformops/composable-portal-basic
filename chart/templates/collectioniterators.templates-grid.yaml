@@ -17,15 +17,15 @@ spec:
     name: templates-grid
     namespace: {{ .Release.Namespace }}
   widgetsRefs:
-  - iterator: .allCompositionDefinitions.items
+  - iterator: .allCompositionDefinitions.status.templatecards
     template:
       apiVersion: templates.krateo.io/v1alpha1
       resource: widgets
-      name: ${ "template-" + .metadata.name + "-card" }
+      name: ${ .metadata.name }
       namespace: ${ .metadata.namespace }
   api:
   - name: allCompositionDefinitions
-    path: "/list?category=defs"
+    path: "/call?apiVersion=templates.krateo.io%2Fv1&resource=restactions&name=templates&namespace={{ .Release.Namespace }}"
     verb: GET
     endpointRef:
       name: snowplow-endpoint
