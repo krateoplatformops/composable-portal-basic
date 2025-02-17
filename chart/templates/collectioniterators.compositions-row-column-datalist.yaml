@@ -19,15 +19,15 @@ spec:
     name: compositions-row-column-datalist
     namespace: {{ .Release.Namespace }}
   widgetsRefs:
-  - iterator: .allCompositions.items
+  - iterator: .allCompositions.status.compositioncards
     template:
       apiVersion: templates.krateo.io/v1alpha1
       resource: widgets
-      name: ${ "composition-" + .metadata.name + "-card" }
+      name: ${ .metadata.name }
       namespace: ${ .metadata.namespace }
   api:
   - name: allCompositions
-    path: "/list?category=compositions"
+    path: "/call?apiVersion=templates.krateo.io%2Fv1&resource=restactions&name=compositions&namespace={{ .Release.Namespace }}"
     verb: GET
     endpointRef:
       name: snowplow-endpoint
