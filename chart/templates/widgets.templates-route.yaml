@@ -4,15 +4,9 @@ metadata:
   name: templates-route
   namespace: {{ .Release.Namespace }}
 spec:
-  actions:
-  - template:
-      apiVersion: templates.krateo.io/v1alpha1
-      name: templates-grid
-      namespace: {{ .Release.Namespace }}
-      resource: collectioniterators
-      verb: GET
   app:
     template:
+      endpoint: /call?resource=collectioniterators&apiVersion=templates.krateo.io/v1alpha1&name=templates-grid&namespace={{ .Release.Namespace }}
       icon: fa-rectangle-list
       label: Templates
       menu: "true"
