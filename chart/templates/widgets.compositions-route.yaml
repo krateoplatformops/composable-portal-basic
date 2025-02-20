@@ -4,15 +4,9 @@ metadata:
   name: compositions-route
   namespace: {{ .Release.Namespace }}
 spec:
-  actions:
-  - template:
-      apiVersion: templates.krateo.io/v1alpha1
-      name: compositions-row
-      namespace: {{ .Release.Namespace }}
-      resource: collections
-      verb: GET
   app:
     template:
+      endpoint: /call?resource=collections&apiVersion=templates.krateo.io/v1alpha1&name=compositions-row&namespace={{ .Release.Namespace }}
       icon: fa-shapes
       label: Compositions
       menu: "true"
@@ -29,6 +23,7 @@ metadata:
 spec:
   app:
     template:
+      endpoint: /call?resource=collections&apiVersion=templates.krateo.io/v1alpha1&name=compositions-{namespace}-row&namespace={namespace}
       path: /compositions/{namespace}
   type: route
 ---
@@ -40,5 +35,6 @@ metadata:
 spec:
   app:
     template:
+      endpoint: /call?resource=collections&apiVersion=templates.krateo.io/v1alpha1&name=composition-{name}-tablist&namespace={namespace}
       path: /compositions/{namespace}/{name}
   type: route
