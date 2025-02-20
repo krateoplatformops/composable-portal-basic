@@ -16,7 +16,29 @@ spec:
       icon: fa-shapes
       label: Compositions
       menu: "true"
-      path: /compositions
+      path: /compositions/
       default: "true"
       order: "3"
+  type: route
+---
+apiVersion: templates.krateo.io/v1alpha1
+kind: Widget
+metadata:
+  name: compositions-namespace-route
+  namespace: {{ .Release.Namespace }}
+spec:
+  app:
+    template:
+      path: /compositions/{namespace}
+  type: route
+---
+apiVersion: templates.krateo.io/v1alpha1
+kind: Widget
+metadata:
+  name: compositions-namespace-name-route
+  namespace: {{ .Release.Namespace }}
+spec:
+  app:
+    template:
+      path: /compositions/{namespace}/{name}
   type: route
