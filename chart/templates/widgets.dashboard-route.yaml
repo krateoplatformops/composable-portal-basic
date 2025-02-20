@@ -4,15 +4,9 @@ metadata:
   name: dashboard-route
   namespace: {{ .Release.Namespace }}
 spec:
-  actions:
-  - template:
-      apiVersion: templates.krateo.io/v1alpha1
-      name: dashboard-row
-      namespace: {{ .Release.Namespace }}
-      resource: collections
-      verb: GET
   app:
     template:
+      endpoint: /call?resource=collections&apiVersion=templates.krateo.io/v1alpha1&name=dashboard-row&namespace={{ .Release.Namespace }}
       icon: fa-chart-line
       label: Dashboard
       menu: "true"
