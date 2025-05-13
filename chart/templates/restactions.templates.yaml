@@ -14,3 +14,4 @@ spec:
       iterator: .[]
     path: ${ "/apis/templates.krateo.io/v1alpha1/namespaces/" + (.) + "/widgets" }
     filter: "[.items[] | select(.spec.type == \"card\" and (.metadata.name | startswith(\"template-\")))]"
+    continueOnError: true

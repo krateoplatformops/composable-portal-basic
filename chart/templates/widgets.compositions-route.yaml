@@ -10,7 +10,7 @@ spec:
       icon: fa-shapes
       label: Compositions
       menu: "true"
-      path: /compositions/
+      path: /compositions
       default: "true"
       order: "3"
   type: route
