@@ -1,0 +1,16 @@
+apiVersion: templates.krateo.io/v1
+kind: RESTAction
+metadata:
+  name: dashboard-compositions
+  namespace: {{ .Release.Namespace }}
+spec:
+  api:
+  - name: allCompositions
+    path: "/list?category=compositions"
+    verb: GET
+    continueOnError: true
+    endpointRef:
+      name: snowplow-endpoint
+      namespace: {{ .Release.Namespace }}
+    headers:
+    - 'Accept: application/json'

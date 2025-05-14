@@ -24,7 +24,7 @@ spec:
         ${ [.allCompositionDefinitions.items[] | { key: .metadata.uid, name: .metadata.name, namespace: .metadata.namespace, date: .metadata.creationTimestamp, status: ( if .status? and .status.conditions? then (.status.conditions[]? | select(.type == "Ready") | "Ready: " + .status // (.status.conditions[]? | select(.type == "Synced") | .message)) else "Status not available" end ) } ] | sort_by(.date) | reverse }
   api:
   - name: allCompositionDefinitions
-    path: "/call?apiVersion=templates.krateo.io%2Fv1&resource=restactions&name=templates&namespace={{ .Release.Namespace }}"
+    path: "/call?apiVersion=templates.krateo.io%2Fv1&resource=restactions&name=dashboard-templates&namespace={{ .Release.Namespace }}"
     verb: GET
     endpointRef:
       name: snowplow-endpoint
