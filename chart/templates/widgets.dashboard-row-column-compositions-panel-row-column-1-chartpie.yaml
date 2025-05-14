@@ -18,7 +18,7 @@ spec:
         "{ \"color\": \"gray\", \"value\":" + ((.allCompositions.items | length) - ([.allCompositions.items[] | select(.status.conditions[]? | .type == "Ready" and .status == "True")] | length  ) - ([.allCompositions.items[] | select(.status.conditions[]? | .type == "Ready" and .status == "False")] | length ) | tostring ) + ", \"label\": \"Unknown\"}]}" } 
   api:
   - name: allCompositions
-    path: "/list?category=compositions"
+    path: "/call?apiVersion=templates.krateo.io%2Fv1&resource=restactions&name=compositions&namespace={{ .Release.Namespace }}"
     verb: GET
     endpointRef:
       name: snowplow-endpoint

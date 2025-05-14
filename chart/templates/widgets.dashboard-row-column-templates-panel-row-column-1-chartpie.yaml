@@ -17,7 +17,7 @@ spec:
         "{ \"color\": \"gray\", \"value\":" + ((.allCompositionDefinitions.items | length) - ([.allCompositionDefinitions.items[] | select(.status.conditions[]? | .type == "Ready" and .status == "True")] | length  ) - ([.allCompositionDefinitions.items[] | select(.status.conditions[]? | .type == "Ready" and .status == "False")] | length ) | tostring ) + ", \"label\": \"Unknown\"}]}" } 
   api:
   - name: allCompositionDefinitions
-    path: "/list?category=defs"
+    path: "/call?apiVersion=templates.krateo.io%2Fv1&resource=restactions&name=templates&namespace={{ .Release.Namespace }}"
     verb: GET
     endpointRef:
       name: snowplow-endpoint
