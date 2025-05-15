@@ -7,18 +7,17 @@ spec:
   type: chartpie
   app:
     template:
-      # title: ${ [.allCompositionDefinitions.items[] | select(.status.conditions[]? | .type == "Ready")] | length }
-      title: ${ [.allCompositions.items[] ] | length }
+      title: ${ .allCompositions.status | length }
       description: Compositions
       series: >
-        ${ "{ \"total\":" + (.allCompositions.items | length | tostring) + 
+        ${ "{ \"total\":" + (.allCompositions.status | length | tostring) + 
         ", \"data\": [" +
-        "{ \"color\": \"green\", \"value\":" + ([.allCompositions.items[] | select(.status.conditions[]? | .type == "Ready" and .status == "True")] | length | tostring ) + ", \"label\": \"Ready:True\"}," +
-        "{ \"color\": \"orange\", \"value\":" + ([.allCompositions.items[] | select(.status.conditions[]? | .type == "Ready" and .status == "False")] | length | tostring ) + ", \"label\": \"Ready:False\"}," +
-        "{ \"color\": \"gray\", \"value\":" + ((.allCompositions.items | length) - ([.allCompositions.items[] | select(.status.conditions[]? | .type == "Ready" and .status == "True")] | length  ) - ([.allCompositions.items[] | select(.status.conditions[]? | .type == "Ready" and .status == "False")] | length ) | tostring ) + ", \"label\": \"Unknown\"}]}" } 
+        "{ \"color\": \"green\", \"value\":" + ([.allCompositions.status[] | select(.status.conditions[]? | .type == "Ready" and .status == "True")] | length | tostring ) + ", \"label\": \"Ready:True\"}," +
+        "{ \"color\": \"orange\", \"value\":" + ([.allCompositions.status[] | select(.status.conditions[]? | .type == "Ready" and .status == "False")] | length | tostring ) + ", \"label\": \"Ready:False\"}," +
+        "{ \"color\": \"gray\", \"value\":" + ((.allCompositions.status | length) - ([.allCompositions.status[] | select(.status.conditions[]? | .type == "Ready" and .status == "True")] | length  ) - ([.allCompositions.status[] | select(.status.conditions[]? | .type == "Ready" and .status == "False")] | length ) | tostring ) + ", \"label\": \"Unknown\"}]}" }
   api:
   - name: allCompositions
-    path: "/list?category=compositions"
+    path: "/call?apiVersion=templates.krateo.io%2Fv1&resource=restactions&name=dashboard-compositions&namespace={{ .Release.Namespace }}"
     verb: GET
     endpointRef:
       name: snowplow-endpoint

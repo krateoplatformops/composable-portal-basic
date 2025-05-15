@@ -1,0 +1,17 @@
+apiVersion: templates.krateo.io/v1
+kind: RESTAction
+metadata:
+  name: dashboard-templates
+  namespace: {{ .Release.Namespace }}
+spec:
+  api:
+  - name: namespaces
+    path: "/api/v1/namespaces"
+    filter: "[.items[] | .metadata.name]"
+  - name: allCompositionDefinitions
+    dependsOn: 
+      name: namespaces
+      iterator: .[]
+    path: ${ "/apis/core.krateo.io/v1alpha1/namespaces/" + (.) + "/compositiondefinitions" }
+    continueOnError: true
+  filter: "[.allCompositionDefinitions[] | select(.items != null and (.items | length > 0)) | .items[]]"
