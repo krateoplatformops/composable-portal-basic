@@ -7,14 +7,14 @@ spec:
   type: chartpie
   app:
     template:
-      title: ${ [.allCompositionDefinitions.items[] ] | length }
+      title: ${ [(.allCompositionDefinitions.status | .[] | .items[]) ] | length }
       description: Templates
       series: >
-        ${ "{ \"total\":" + (.allCompositionDefinitions.items | length | tostring) + 
+        ${ "{ \"total\":" + ((.allCompositionDefinitions.status | .[] | .items) | length | tostring) + 
         ", \"data\": [" +
-        "{ \"color\": \"green\", \"value\":" + ([.allCompositionDefinitions.items[] | select(.status.conditions[]? | .type == "Ready" and .status == "True")] | length | tostring ) + ", \"label\": \"Ready:True\"}," +
-        "{ \"color\": \"orange\", \"value\":" + ([.allCompositionDefinitions.items[] | select(.status.conditions[]? | .type == "Ready" and .status == "False")] | length | tostring ) + ", \"label\": \"Ready:False\"}," +
-        "{ \"color\": \"gray\", \"value\":" + ((.allCompositionDefinitions.items | length) - ([.allCompositionDefinitions.items[] | select(.status.conditions[]? | .type == "Ready" and .status == "True")] | length  ) - ([.allCompositionDefinitions.items[] | select(.status.conditions[]? | .type == "Ready" and .status == "False")] | length ) | tostring ) + ", \"label\": \"Unknown\"}]}" } 
+        "{ \"color\": \"green\", \"value\":" + ([(.allCompositionDefinitions.status | .[] | .items[]) | select(.status.conditions[]? | .type == "Ready" and .status == "True")] | length | tostring ) + ", \"label\": \"Ready:True\"}," +
+        "{ \"color\": \"orange\", \"value\":" + ([(.allCompositionDefinitions.status | .[] | .items[]) | select(.status.conditions[]? | .type == "Ready" and .status == "False")] | length | tostring ) + ", \"label\": \"Ready:False\"}," +
+        "{ \"color\": \"gray\", \"value\":" + (((.allCompositionDefinitions.status | .[] | .items) | length) - ([(.allCompositionDefinitions.status | .[] | .items[]) | select(.status.conditions[]? | .type == "Ready" and .status == "True")] | length  ) - ([(.allCompositionDefinitions.status | .[] | .items[]) | select(.status.conditions[]? | .type == "Ready" and .status == "False")] | length ) | tostring ) + ", \"label\": \"Unknown\"}]}" } 
   api:
   - name: allCompositionDefinitions
     path: "/call?apiVersion=templates.krateo.io%2Fv1&resource=restactions&name=dashboard-templates&namespace={{ .Release.Namespace }}"
