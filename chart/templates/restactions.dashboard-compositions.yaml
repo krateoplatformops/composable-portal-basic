@@ -17,7 +17,7 @@ spec:
   - name: allCompositions
     dependsOn: 
       name: allNamespacesAndCrds
-      iterator: .allNamespacesAndCrds.status
+      iterator: .allNamespacesAndCrds.status[]
     path: ${ "/apis/composition.krateo.io/" + (.version) + "/namespaces/" + (.namespace) + "/" + (.plural) }
     continueOnError: true
-  filter: "[.allCompositions[] | select(.items != null and (.items | length > 0)) | .items[]]"
+  filter: "[.allCompositions.items[]?]"
