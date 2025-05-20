@@ -14,4 +14,5 @@ spec:
       iterator: .[]
     path: ${ "/apis/core.krateo.io/v1alpha1/namespaces/" + (.) + "/compositiondefinitions" }
     continueOnError: true
-  filter: "[.allCompositionDefinitions[] | select(.items != null and (.items | length > 0)) | .items[]]"
+    filter: "[.]"
+  filter: "[.allCompositionDefinitions[].items[]?]"
