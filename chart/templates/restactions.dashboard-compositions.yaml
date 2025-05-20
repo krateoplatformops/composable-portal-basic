@@ -20,4 +20,4 @@ spec:
       iterator: .allNamespacesAndCrds.status[]
     path: ${ "/apis/composition.krateo.io/" + (.version) + "/namespaces/" + (.namespace) + "/" + (.plural) }
     continueOnError: true
-  filter: "[.allCompositions.items[]?]"
+  filter: "[.allCompositions[].items[]?]"
